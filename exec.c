@@ -73,17 +73,14 @@ int exec_program(char *program, int argc, char **argv,
                 exit(0);
             }
         } else { // parent
-            int prog_err_code;
-            int err = wait(&prog_err_code);
-            if(err == -1) { // child process didn't finish
-                return -2;
-            } else if(prog_err_code > 0) { // program failed
-                errno = prog_err_code;
-                return -1;
-            } else if(prog_err_code < 0) { // redirection failed
-                return prog_err_code;
-            } else {
-                return 0;
+            if(istream != STDIN_FILENO) {
+                close(istream);
+            }
+            if(ostream != STDOUT_FILENO) {
+                close(ostream);
+            }
+            if(errstream != STDERR_FILENO) {
+                close(errstream);
             }
         }
     } else {
@@ -100,8 +97,13 @@ int exec_command(char **tokens) {
     
     int next_istream = STDIN_FILENO;
     
+    char *progv[64];
+    int progc = 0;
+    
     while(!end) {
         char *program = *curr_ptr;
+        progv[progc] = program;
+        progc++;
         curr_ptr++;
         char **arg_start = curr_ptr;
         int argc = 0;
@@ -175,6 +177,20 @@ int exec_command(char **tokens) {
         }
         argv[argc] = 0;
         exec_program(program, argc, argv, istream, ostream, errstream);
+    }
+    
+    int j;
+    for(j = 0; j < progc; j++) {
+        int prog_err_code;
+        int err = waitpid(getgid(), &prog_err_code);
+        if(err == -1) { // child process didn't finish
+            return -2;
+        } else if(prog_err_code > 0) { // program failed
+            errno = prog_err_code;
+            return -1;
+        } else if(prog_err_code < 0) { // redirection failed
+            return prog_err_code;
+        }
     }
 }
 
