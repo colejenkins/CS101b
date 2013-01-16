@@ -12,7 +12,8 @@ char ** tokenize(char *command, int *num_tokens) {
     int curr_token_num = 0;
     
     for(i = 0; i < command_length; i++) {
-        if(command[i] == ' ' || command[i] ==) {
+        if(command[i] == ' ' || command[i] == '<' 
+                || command[i] == '>' || command[i] == '|') {
             token_length = i - start;
             char token[token_length + 1];
             strlcpy(token, command + start, token_length + 1);
