@@ -25,7 +25,11 @@ int control_loop() {
     // write $user + ' : ' + $cwd to prompt string
     strncpy(prompt_str, user, user_len + 1); // we don't want null termination here!
     prompt_str[user_len] = ' ';
+    prompt_str[user_len + 1] = ':';
+    prompt_str[user_len + 2] = ' ';
     strncpy(prompt_str + user_len + 1, cwd, cwd_len + 1);
+    prompt_str[user_len + 3 + cwd_len] = '>';
+    prompt_str[user_len + 3 + cwd_len + 1] = '\0';
 }
 
 /*
