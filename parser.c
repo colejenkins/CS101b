@@ -14,8 +14,8 @@ char ** tokenize(char *command, int *num_tokens) {
     for(i = 0; i < command_length; i++) {
         if(command[i] == ' ' || command[i] ==) {
             token_length = i - start;
-            char token[token_length];
-            strncpy(token, command + start, token_length);
+            char token[token_length + 1];
+            strlcpy(token, command + start, token_length + 1);
             tokens[curr_token_num] = token;
             curr_token_num++;
         }
@@ -24,16 +24,19 @@ char ** tokenize(char *command, int *num_tokens) {
         } else if(command[i] == '<') {
             char token[1];
             token[0] = '<';
+            token[1] = '\0';
             curr_token_num++;
             i++;
         } else if(command[i] == '>') {
             char token[1];
             token[0] = '>';
+            token[1] = '\0';
             curr_token_num++;
             i++;
         } else if(command[i] == '|') {
             char token[1];
             token[0] = '|';
+            token[1] = '\0';
             curr_token_num++;
             i++;
         }
