@@ -182,7 +182,7 @@ int exec_command(char **tokens) {
     int j;
     for(j = 0; j < progc; j++) {
         int prog_err_code;
-        int err = waitpid(getgid(), &prog_err_code);
+        int err = waitpid(getgrp(), &prog_err_code);
         if(err == -1) { // child process didn't finish
             return -2;
         } else if(prog_err_code > 0) { // program failed
